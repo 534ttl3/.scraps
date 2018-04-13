@@ -1,0 +1,55 @@
+\documentclass[12pt]{article}
+
+\usepackage{answers}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{url}
+\usepackage{mathrsfs}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{definition}[2][Definition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{solution}[2][Solution]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{question}[2][Question]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\begin{document}
+
+\title{\vspace{-2cm}Computing Activity Protocol}
+\author{CS}
+\maketitle
+
+\begin{problem}{}
+    Only using standard \texttt{git} isn't elegant for managing and versioning binary files in addition to text-based files. For binary files, \texttt{diff}s most often don't make sense and there's no general behaviour or rules for how they would be merged. If there's no reasonable way to merge, the files have to be stored whole. Since binary files are usually way larger than pure source code files, saving them as whole blobs for each commit enourmously increases the size of the core git repository. \\ The solution must involve the storage of a set of binary files (whole chunks, no diffs) for each commit that produced new ones, outside the core git repository, but still associatable with each commit. \\
+What I specifically want at this point is to export a pdf (e.g. current version from latex file), and misc. exported figures (pdf or png) for different versions of a program. \\ This would be great for collaboration, since if the binary files aren't integral to the git repository itself, a supervisor doesn't have to deal with an unprofessionally cluttered up and ever growing git repo containing binary files, but rather just \texttt{get}s or \texttt{drop}s only the necessary binary files (demo-files, figures, pdfs) to review at will. 
+\end{problem}
+
+\begin{solution}{}
+There exist several approaches to do this: 
+    \begin{enumerate} 
+    \item I tried \texttt{git-media} first, which turns out to not be developed actively any longer and therefore I abandoned it.
+    \item \texttt{git-annex} seems to be promising, and that's what I've implemented. 
+\end{enumerate}
+
+    \texttt{git-annex} is a decentralized system, where binary files can be added to a commit. Those binaries are then stored in a special subfolder somewhere in \texttt{.git/}, and symlinks are automatically put at the right positions in the working tree. Core \texttt{git} only tracks and checks out the symlinks (those are usually text files with a hash of the associated binary file). \\
+    I set it up with one client (non-bare repo) and one server (bare repo), where the client pushes changes to the server and syncs the binary files (\texttt{rsync} by default, and over ssh, in this case is \texttt{rsync} not a special remote) with a call to \texttt{git annex sync --content}. \\
+  Details can be found in the walkthrough on the official \texttt{git-annex} webpage.
+\end{solution}
+
+\end{document}
