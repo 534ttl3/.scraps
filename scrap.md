@@ -1,3 +1,11 @@
+# Things I need to read and do to achieve 2d animations of simple geometriews with Panda3d
+
+- Learn more about the *Intervals* system, which can playback scripted actinos
+
+- Advanced operations with Panda3D's internal structures
+
+- export .egg animations from blender and play them back in panda3d
+
 # Panda3d internal geometry classes
 
 Each **GeomVertex** has a position, but can also have other geometric data other associated with it, like normal vector (there's almost always redundant information, since it would suffice to define one normal vector for a plane made of 3 GeomVertex's), texcoord, color, ... , custom (whatever set of data you want to give to the shader)). For each vertex, this set of information is stored in a **GeomVertexData** object. You can modify these *column names* (see the **GeomVertexFormat** class for a list of reserved column names). 
