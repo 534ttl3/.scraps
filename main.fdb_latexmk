@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1523888202 "main.tex" "main.pdf" "main" 1523888485
+["pdflatex"] 1525546984 "main.tex" "main.pdf" "main" 1525546984
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm" 1246382020 1004 54797486969f23fa377b128694d548df ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm" 1246382020 988 bdf658c3bfc2d96d3c8b02cfc1c94c20 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm" 1246382020 916 f87d7c45f9c908e672703b83b72241a3 ""
@@ -95,9 +95,9 @@
   "/usr/share/texlive/texmf-dist/tex/latex/tools/multicol.sty" 1454284088 30713 fa1ba57b1c4b4b37d548b809e66c85ba ""
   "/usr/share/texlive/texmf-dist/tex/latex/tools/verbatim.sty" 1454284088 7264 cf839ee7f0c2bfc711b0b88970764569 ""
   "/usr/share/texlive/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
-  "/var/lib/texmf/web2c/luatex/lualatex.fmt" 1518972407 1294012 c36802d4a00a8e2983e8a902bf4f099d ""
-  "main.aux" 1523888203 8 a94a2480d3289e625eea47cd1b285758 ""
-  "main.tex" 1523888182 10217 1585959a16bbbe6725aeda5f02145a02 ""
+  "/var/lib/texmf/web2c/luatex/lualatex.fmt" 1524307195 1294019 25b66642d6b2e1b278e648207f52d848 ""
+  "main.aux" 1525546984 8 a94a2480d3289e625eea47cd1b285758 ""
+  "main.tex" 1525546984 10218 00d8690b8012be908dafd1801b552628 ""
   (generated)
   "main.log"
   "main.pdf"
