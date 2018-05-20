@@ -83,7 +83,7 @@ The pre-defined **GeomVertexFormat** that I would use in most situations is
 format = GeomVertexFormat.getV3n3c4()    
 ```
 
-You create the **GeomVertexDatat** by calling 
+You create the **GeomVertexData** by calling 
 
 ```
 vdata = GeomVertexData('name', format, Geom.UHStatic)
@@ -101,6 +101,11 @@ vertex), appending it to the column, you first create for each column a
 ``add_ddataXX()``, e.g. 
 
 ```
+vertex = GeomVertexWriter(vdata, 'vertex')
+color = GeomVertexWriter(vdata, 'color')
+```
+and then
+```
 vertex.addData3f(1, 0, 0)
 color.addData4f(0, 0, 1, 1)
  
@@ -113,3 +118,200 @@ color.addData4f(0, 0, 1, 1)
 vertex.addData3f(0, 0, 0)
 color.addData4f(0, 0, 1, 1)
 ```
+
+(Not in manual: There are functions like ``setRow(int row)`` and ``setDataXX()`` to access 
+individual rows and columns and modify data in-place.)
+
+To render anything, you need to instantiate a **GeomPrimitive**, and give it
+the indices of the vertices to use in a particular **GeomVertexData** object. 
+
+To draw some triangles (numbers are indices of vertices), do 
+
+```
+prim = GeomTriangles(Geom.UHStatic)
+ 
+prim.addVertex(0)
+prim.addVertex(1)
+prim.addVertex(2)
+# thats the first triangle
+ 
+# you can also add a few at once
+prim.addVertices(2, 1, 3)
+ 
+prim.addVertices(0, 5, 6)
+```
+
+It is recommended, but not strictly necessary to also call ``close_primitive()``
+after adding all vertices, especially for variable number of vertices
+primitives e.g. for **GeomLinestrips**. You can also give a usage hint (almost
+always ``Geom.UH_static``, since usually, if you intend to animate the
+vertices, you would operate on the vertices, not the indices). 
+
+There are several utility functions to add vertices by their index: 
+
+```
+add_vertices(v1, v2)
+add_vertices(v1, v2, v3)
+add_vertices(v1, v2, v3, v4)
+
+add_consecutive_vertices(start, numVertices)
+
+add_next_vertices(numVertices)
+```
+None of these call ``close_primitive()``, which is recommended you call
+explicitly after having added all your vertices. 
+
+To put your geometry into the scene graph, you need a **Geom** object and a
+**GeomNode**.
+
+```
+geom = Geom(vdata)
+geom.addPrimitive(prim)
+ 
+node = GeomNode('gnode')
+node.addGeom(geom)
+ 
+nodePath = render.attachNewNode(node)
+```
+
+There is only one **GeomVertexData** associated with any particular **Geom**
+(set it later using geom.setVertexData()).
+
+Again: A **GeomNode** may include multiple **Geoms**, and each **Geom** may include
+multiple **GeomPrimitives**. (However, all of the primitives added to a **Geom** must
+have the same fundamental primitive type: triangles, lines, or points.)
+
+-------- Editing Stuff in Blender and loading into Panda3d
+    In Blender, you can install the panda3d .egg importer by downloading the repo
+    at https://github.com/rdb/blender-egg-importer as .zip and going to File ->
+    User Preferences -> Addons -> Install from .zip file, and activating it
+    afterwards.
+
+    The best and most famous exporter is according to panda3d.org the YABEEE
+export addon, that you can download from it's github page as a .zip and then install
+the addon from the file. 
+
+    In Blender, to put the 3d cursor at blenders origin, use ``Ctrl + C``
+
+    In Blender, to put the model's origin (yellow dot) to the position of the
+    cursor, use ``Ctrl + Alt + Shift + C`` and select the appropriate option.
+
+    In Blender, the **Pivot Point** is the Point, where the mini-3d Axes are shown. Depending on where the pivot point is, different operations  (e.g. scaling, rotating) affect the object differently.
+------- 
+
+To be able to manually position the camera using (``ShowBase.camera.setPos()``), you need to explicitly call ``self.disableMouse()`` at the beginning.
+
+Apparently, ``prim.close_primitive()`` and ``prim.closePrimitive()`` are the
+same thing. In 1.9.4, there apparently is only ``prim.closePrimitive()``. So,
+if in doubt, call ``prim.closePrimitive()`` or nothing at all, since I don't
+think it's necessary. 
+
+
+------ Tinkering around with Inkscape 
+    To make the complicated ends of latex curly brackets a path, you have to 
+    ungroup (Ctrl + Shift + G) and unlink clones (Alt + Shift + D) repeatedly, 
+    then you can select the nodes of the path. 
+------
+
+------ If pip2.x aka pip or pip3 is not installed: 
+```
+    sudo apt-get install python-pip
+    sudo apt-get install python3-pip
+```
+------
+
+------ Tinkering around with SVG Libraries:
+    I want to render pdf (or even better svg) in panda3d
+    This piece of code 
+    https://discourse.panda3d.org/t/vector-graphics-on-textures-with-gizeh-cairo/15476
+    caught my attention. 
+
+    To try this out, you need **Gizeh**, a python package that depends on **Cairo**
+
+    Before installing these, upgrade your setuptools: 
+    ```
+    sudo pip install --upgrade setuptools
+    ```
+    Then install **Cairo** and **Gizeh**
+    ```
+    sudo apt-get install libcairo2-dev
+    sudo pip install gizeh
+    ```
+
+-----
+
+What do I actually need now?
+
+- From now, on creating 2d elements and animating them should pose much less of
+  a problem, since I have direct access to the vertex data. 
+
+- For videos (mp4) that explain math, I need only bitmap files (since the video
+  itself is also limited in resolution). **I need a way to convert pdfs (or dvis) to
+  bitmaps with transparent background.** (
+  - Sympy: writes the equations to actual files with white background and black font. I'm not sure if it is also able to write to a **BytesIO**-like object, which would make it possible to
+    store the files in a buffer not need to make the program write it back to the file
+system (harddrive is slow). 
+  - Cairo: can read in pdfs and convert them to bitmaps and even svgs (and can
+    probably also calculate intermediate hermitian spline points in bezier
+    curves)
+  - LaTeX itself can be called from within python using a subprocess. Also,
+    LaTeX integrates now a function directly, which automatically makes a call
+    to convert the pdf to a png file. You then write to disk (latex file), read
+    from disk (latex file), write to disk (pdf and png) and read from disk again
+    (read png as texture), which may be quite expensive, but the easiest solution
+    so far) 
+
+
+What are putoff-tasks that would be cool but probably come with too many
+difficulties ?
+
+- putoff-task: In Panda3d itself, I don't necessarily need to store latex elements as vector
+  data (that is sampled bezier curves with only straight lines connecting
+nodes), I could just render all latex elements as sprites with white/colors on
+transparent/halfway transparent background. Morphing sprites into other sprites
+should also work (by animating the quad's corners and using double
+  textures where one fades in and the other fades out)
+
+- putoff-task: use actual vector graphics tools to render everything, like
+  cairo. That would make it possible to create state machines in which you can
+  navigate visually though problems, changeing interactively back and forth
+  (interacting with the graphics themselves). I don't know how expensive it is to
+  render animated svg graphics. 
+
+
+Do 10. Mai 21:33:05 CEST 2018 
+** The Next Step would be to look into Sympy rendering latex to a
+semi-transparent bitmap buffer and displaying that in panda3d ** - Ok, done
+that. As it turns out, it's probably easier to handle it differently. But with
+some refining it may still be an option. It doesn't give you the full power of
+latex though. You may not be able to play tikz images. 
+
+----- Vim: formatting/breaking long lines 
+    gq{motion} % format the line that {motion} moves over
+    {Visual}gq % format the visually selected area
+    gqq        % format the current line
+    
+    re-connect broken lines with Shift + J    
+-----
+
+
+Fr 18. Mai 10:16:40 CEST 2018
+
+- scale latex textured quad to appropriate dimensions - DONE
+- find a way to compile and load a latex texture procedurally, then display it
+
+----- Matrix Representation within Panda3d differs from normal opengl/glm
+    for all about panda3d's versions: 
+    https://www.panda3d.org/manual/index.php/Matrix_Representation
+    It appears as if p3d's Mat4 (LMatrix4f) are the transposed versions of the normal opengl/glm convention. So, you need to always transform your matrices into the right format when using i.e. pyglm. 
+    The properly formatted p3d matrices for simple translation/rotation operations
+    one can retrieve directly with a call to e.g. 
+    ```
+    static LMatrix4f translateMat   (   const LVecBase3f    trans   )   static
+    ```
+    (see https://www.panda3d.org/reference/1.9.4/python/panda3d.core.LMatrix4f#af0d0c9acb09597d82fa981aa804faa7a)
+-----
+
+----- Vim command to make the splits the same size
+    Ctrl + W = 
+-----
