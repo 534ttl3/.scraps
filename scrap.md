@@ -298,7 +298,7 @@ latex though. You may not be able to play tikz images.
 Fr 18. Mai 10:16:40 CEST 2018
 
 - scale latex textured quad to appropriate dimensions - DONE
-- find a way to compile and load a latex texture procedurally, then display it
+- find a way to compile and load a latex texture procedurally, then display it - DONE
 
 ----- Matrix Representation within Panda3d differs from normal opengl/glm
     for all about panda3d's versions: 
@@ -314,4 +314,16 @@ Fr 18. Mai 10:16:40 CEST 2018
 
 ----- Vim command to make the splits the same size
     Ctrl + W = 
+-----
+
+
+So 20. Mai 20:54:19 CEST 2018
+
+- get animation (moving quads) to work - DONE
+
+----- Attention when manually setting triangle geometry points directly in OpenGL or
+indirectly through Panda3d with addData3f and addVertices. Sometimes, it may
+occurr that the indices must be shuffled around before a (single) triangle
+appears on screen. May have to do with direction (clockwise or counterclockwise
+(or has it?))
 -----
