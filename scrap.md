@@ -327,3 +327,28 @@ occurr that the indices must be shuffled around before a (single) triangle
 appears on screen. May have to do with direction (clockwise or counterclockwise
 (or has it?))
 -----
+
+
+
+Di 5. Jun 14:06:39 CEST 2018
+
+Cutting the videos based on start and end time using ffmpeg
+https://stackoverflow.com/a/42827058
+
+Copy to clipboard with xclip, even works in my current tmux/zsh configuration:
+alias pbc='xclip -selection clipboard'
+
+
+Do 7. Jun 14:41:18 CEST 2018
+
+The Current working directory can be retrieved in python using
+
+from pathlib import Path, PurePath
+print(Path.cwd())
+
+Get full file path of a file
+readlink test.txt -f
+or in vim: 
+:!readlink -f %
+this next thing also works, this was added to coreutils later on: 
+realpath test.txt
