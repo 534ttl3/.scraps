@@ -352,3 +352,13 @@ or in vim:
 :!readlink -f %
 this next thing also works, this was added to coreutils later on: 
 realpath test.txt
+
+
+
+Di 3. Jul 11:54:30 CEST 2018
+
+Meeting: 
+- We don't necessarily need real-space simulations
+- Oxygen diffusion may not be that much of a problem when going with the
+  assumption that the process is reaction-limited and therefore using "only"
+  topological KMC
