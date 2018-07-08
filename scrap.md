@@ -315,3 +315,12 @@ Fr 18. Mai 10:16:40 CEST 2018
 ----- Vim command to make the splits the same size
     Ctrl + W = 
 -----
+
+----- To display info about a package in pip, do (e.g. for panda3d)
+    pip show panda3d
+-----
+
+----- Installing panda3d on ubuntu with python already installed is easy:
+    just follow the instructions at
+    https://github.com/panda3d/panda3d
+-----
