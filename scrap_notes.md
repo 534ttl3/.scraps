@@ -560,5 +560,5 @@ Sun Aug  5 23:47:43 CEST 2018
 Mon Aug 20 13:19:40 CEST 2018
 
 - python: using a star import is considered a bad design. Only use things that
-  are really needed, if you find yourself doing a lot of redundant importing 
+  are really needed, if you find yourself doing a lot of repetitive importing 
   work, then consider restructuring your program
