@@ -298,7 +298,7 @@ latex though. You may not be able to play tikz images.
 Fr 18. Mai 10:16:40 CEST 2018
 
 - scale latex textured quad to appropriate dimensions - DONE
-- find a way to compile and load a latex texture procedurally, then display it
+- find a way to compile and load a latex texture procedurally, then display it - DONE
 
 ----- Matrix Representation within Panda3d differs from normal opengl/glm
     for all about panda3d's versions: 
@@ -324,3 +324,76 @@ Fr 18. Mai 10:16:40 CEST 2018
     just follow the instructions at
     https://github.com/panda3d/panda3d
 -----
+
+So 20. Mai 20:54:19 CEST 2018
+
+- get animation (moving quads) to work - DONE
+
+----- Attention when manually setting triangle geometry points directly in OpenGL or
+indirectly through Panda3d with addData3f and addVertices. Sometimes, it may
+occurr that the indices must be shuffled around before a (single) triangle
+appears on screen. May have to do with direction (clockwise or counterclockwise
+(or has it?))
+-----
+
+
+
+Di 5. Jun 14:06:39 CEST 2018
+
+Cutting the videos based on start and end time using ffmpeg
+https://stackoverflow.com/a/42827058
+
+Copy to clipboard with xclip, even works in my current tmux/zsh configuration:
+alias pbc='xclip -selection clipboard'
+
+
+Do 7. Jun 14:41:18 CEST 2018
+
+The Current working directory can be retrieved in python using
+
+from pathlib import Path, PurePath
+print(Path.cwd())
+
+Get full file path of a file
+readlink test.txt -f
+or in vim: 
+:!readlink -f %
+this next thing also works, this was added to coreutils later on: 
+realpath test.txt
+
+
+
+Di 3. Jul 11:54:30 CEST 2018
+
+Meeting: 
+- We don't necessarily need real-space simulations
+- Oxygen diffusion may not be that much of a problem when going with the
+  assumption that the process is reaction-limited and therefore using "only"
+  topological KMC
+
+
+Sun Jul  8 14:38:14 CEST 2018
+
+- Latex: always use KOMA-Classes. 
+- If you want to use margin notes like with marginpar, but expand it at the end
+  of a page properly, use KOMA's makenote instead
+- makenote saves the arguments into an auxiliary file. If you use any latex
+  commands in a makenote, make sure to \protect them.
+
+
+Sun Aug  5 23:47:43 CEST 2018
+
+- In Rischke I (Klassische Mechanik), there are a lot of good explicit
+  calculations, especially regarding the equivalence of the 3 approaches to
+  defining a conservative force field.
+
+- In Freudenthal's *Mathematics as an Educational Task*, p. 555-556, the
+  confusion with the sometimes left-out explicit dependencies by physicists is
+  explained.
+
+
+Mon Aug 20 13:19:40 CEST 2018
+
+- python: using a star import is considered a bad design. Only use things that
+  are really needed, if you find yourself doing a lot of redundant importing 
+  work, then consider restructuring your program
