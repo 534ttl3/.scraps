@@ -562,3 +562,11 @@ Mon Aug 20 13:19:40 CEST 2018
 - python: using a star import is considered a bad design. Only use things that
   are really needed, if you find yourself doing a lot of repetitive importing 
   work, then consider restructuring your program
+
+
+
+Do 13. Sep 13:07:56 CEST 2018
+
+- show/copy/edit the current path in nautilus: [Ctrl]+[l]
+
+- tip: inkscape can do basic image annotating/highlighting/cropping very well
