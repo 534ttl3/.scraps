@@ -1,5 +1,5 @@
 ---
-title: Computing Activity Protocol
+title: scrap notes
 ...
 
  \
@@ -570,3 +570,36 @@ Do 13. Sep 13:07:56 CEST 2018
 - show/copy/edit the current path in nautilus: [Ctrl]+[l]
 
 - tip: inkscape can do basic image annotating/highlighting/cropping very well
+
+
+Mi 3. Okt 21:32:31 CEST 2018
+
+- copy into / paste from system clipboard in linux: "+y and "+p
+
+- completion: [Ctrl]+[p] and [Ctrl]+[n] for 'previous' and 'next'
+
+
+
+Sat Oct  6 11:14:28 CEST 2018
+
+Notes to learning Clojure within Emacs: 
+
+Compile Clojure Program: 
+C-c C-k
+
+Cider is a terminal for executing Clojure programs interactively. You can
+activate cider using 
+M-x cider-jack-in
+
+A selected region in Emacs can be deleted with 
+C-w
+
+To run the last command again in cider, use 
+M-p
+or 
+C-x arrow-up
+
+To run the current line you're editing, use
+C-x C-e
+(be sure your cursor is at the end of the line)
+
