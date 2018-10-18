@@ -1,169 +1,140 @@
----
-title: scrap notes
-...
-
- \
-
-------------------------------------------------------------------------
-
 Sat Apr 13 29:30:12 CEST 2018
 
-Managing large binary files alongside git {#managing-large-binary-files-alongside-git .unnumbered}
+Managing large binary files alongside git
 =========================================
 
-<span>1</span> Only using standard `git` isn’t elegant for managing and
-versioning binary files in addition to text-based files. For binary
-files, `diff`s most often don’t make sense and there’s no general
-behaviour or rules for how they would be merged. If there’s no
-reasonable way to merge, the files have to be stored whole. Since binary
-files are usually way larger than pure source code files, saving them as
-whole blobs for each commit enourmously increases the size of the core
-git repository.\
-The solution must involve the storage of a set of binary files (whole
-chunks, no diffs) for each commit that produced new ones, outside the
-core git repository, but still associatable with each commit.\
-What I specifically want at this point is to export a pdf (e.g. current
-version from latex file), and misc. exported figures (pdf or png) for
-different versions of a program.\
-This would be great for collaboration, since if the binary files aren’t
-integral to the git repository itself, a supervisor doesn’t have to deal
-with an unprofessionally cluttered up and ever growing git repo
-containing binary files, but rather just `get`s or `drop`s only the
-necessary binary files (demo-files, figures, pdfs) to review at will.
+Only using standard `git` isn’t elegant for managing and versioning binary
+files in addition to text-based files. For binary files, `diff`s most often
+don’t make sense and there’s no general behaviour or rules for how they would
+be merged. If there’s no reasonable way to merge, the files have to be stored
+whole. Since binary files are usually way larger than pure source code files,
+saving them as whole blobs for each commit enourmously increases the size of
+the core git repository.\ The solution must involve the storage of a set of
+binary files (whole chunks, no diffs) for each commit that produced new ones,
+outside the core git repository, but still associatable with each commit.\ What
+I specifically want at this point is to export a pdf (e.g.  current version
+from latex file), and misc. exported figures (pdf or png) for different
+versions of a program.\ This would be great for collaboration, since if the
+binary files aren’t integral to the git repository itself, a supervisor doesn’t
+have to deal with an unprofessionally cluttered up and ever growing git repo
+containing binary files, but rather just `get`s or `drop`s only the necessary
+binary files (demo-files, figures, pdfs) to review at will.
 
 There exist several approaches to do this:
 
-1.  I tried `git-media` first, which turns out to not be developed
-    actively any longer and therefore I abandoned it.
+1.  I tried `git-media` first, which turns out to not be developed actively any
+    longer and therefore I abandoned it.
 
 2.  `git-annex` seems to be promising, and that’s what I’ve implemented.
 
-`git-annex` is a decentralized system, where binary files can be added
-to a commit. Those binaries are then stored in a special subfolder
-somewhere in `.git/`, and symlinks are automatically put at the right
-positions in the working tree. Core `git` only tracks and checks out the
-symlinks (those are usually text files with a hash of the associated
-binary file).\
-I set it up with one client (non-bare repo) and one server (bare repo),
-where the client pushes changes to the server and syncs the binary files
-(`rsync` by default, and over ssh, in this case is `rsync` not a special
-remote) with a call to `git annex sync –content`.\
-Details can be found in the walkthrough on the official `git-annex`
-webpage <http://git-annex.branchable.com/walkthrough/>.\
+`git-annex` is a decentralized system, where binary files can be added to a
+commit. Those binaries are then stored in a special subfolder somewhere in
+`.git/`, and symlinks are automatically put at the right positions in the
+working tree. Core `git` only tracks and checks out the symlinks (those are
+usually text files with a hash of the associated binary file).\ I set it up
+with one client (non-bare repo) and one server (bare repo), where the client
+pushes changes to the server and syncs the binary files (`rsync` by default,
+and over ssh, in this case is `rsync` not a special remote) with a call to `git
+annex sync –content`.\ Details can be found in the walkthrough on the official
+`git-annex` webpage <http://git-annex.branchable.com/walkthrough/>.\
 
-<span>2</span> There are differences between a plain ol’ `remote` and a
-`git-annex` special remote. Special remotes are places, where the
-contents of the binary files are stored (optionally encrypted), while
-git annex can still operate on them much as it would on any other
-remote.\
-Such special remotes support also nice integration with a whole variety
-with widely used web services such as Dropbox, Amazon S3, or your own
-ssh rsync server like. Using a special remote is sensible to do if your
-core git repo is stored on GitHub, which doesn’t yet support
-`git-annex`. (“Once you’ve initialized a special remote in one
-repository, you can enable use of the same special remote in other
-clones of the repository.”[^1])
+There are differences between a plain ol’ `remote` and a `git-annex` special
+remote. Special remotes are places, where the contents of the binary files are
+stored (optionally encrypted), while git annex can still operate on them much
+as it would on any other remote.\ Such special remotes support also nice
+integration with a whole variety with widely used web services such as Dropbox,
+Amazon S3, or your own ssh rsync server like. Using a special remote is
+sensible to do if your core git repo is stored on GitHub, which doesn’t yet
+support `git-annex`. (“Once you’ve initialized a special remote in one
+repository, you can enable use of the same special remote in other clones of
+the repository.” <http://git-annex.branchable.com/walkthrough/#index12h2>)
 
- \
 
-------------------------------------------------------------------------
+Sat Apr 14 20:01:02 CEST 2018:
 
-Sat Apr 14 20:01:02 CEST 2018:\
-
-Blender As A Python Module {#blender-as-a-python-module .unnumbered}
+Blender As A Python Module
 ==========================
 
-As I want to be able to use Blender’s rendering and logic capabilities
-to make scientific illustrations in a programmatic way, I read a few
-paragraphs about the Blender/Python API
+As I want to be able to use Blender’s rendering and logic capabilities to make
+scientific illustrations in a programmatic way, I read a few paragraphs about
+the Blender/Python API
 (<https://docs.blender.org/api/blender_python_api_2_68_release/contents.html>).
-I tried writing python scripts with blender GUI open at the same time in
-it’s Text Block and interactive console mode, but found debugging to be
-very inefficient and mentally exhausting, because one had to constantly
-reload scripts and re-open blender. I now learned (
-<https://docs.blender.org/api/blender_python_api_2_68_release/info_tips_and_tricks.html>
-) that in a text block you can re-load a script that you edit in an
-external Editor/IDE. That still uses Blender and launches an insulated
-python interpreter within blender, enabling the use of the `import bpy`
-library. Sadly though, when writing custom scripts from outside blenders
-built-in interactive console, there is no code completion, because `bpy`
-sources aren’t accessible from the outside (for some reason). For python
-programmers who want to run a python script as the main process and call
-the blender library `import bpy` as a module from within python (as
-opposed to the standard way, where blender calls python from within it’s
-process), there is a way to build blender from source with slightly
-modified options for CMake (
-<https://wiki.blender.org/index.php/User:Ideasman42/BlenderAsPyModule>
-), so that after proper configuration you can use only python scripts to
-call blender and produce an output, and also providing the source and
-code completion from outside the blender GUI. I still have to figure
-out, in what ways the behaviour differs for both workflows (combination
-of GUI and interactive console vs only scripting).\
-I now pulled all of blenders sources (
-`https://git.blender.org/blender.git` ) and built dependencies according
-to the instructions at
+I tried writing python scripts with blender GUI open at the same time in it’s
+Text Block and interactive console mode, but found debugging to be very
+inefficient and mentally exhausting, because one had to constantly reload
+scripts and re-open blender. I now learned
+(<https://docs.blender.org/api/blender_python_api_2_68_release/info_tips_and_tricks.html>)
+that in a text block you can re-load a script that you edit in an external
+Editor/IDE. That still uses Blender and launches an insulated python
+interpreter within blender, enabling the use of the `import bpy` library. Sadly
+though, when writing custom scripts from outside blenders built-in interactive
+console, there is no code completion, because `bpy` sources aren’t accessible
+from the outside (for some reason). For python programmers who want to run a
+python script as the main process and call the blender library `import bpy` as
+a module from within python (as opposed to the standard way, where blender
+calls python from within it’s process), there is a way to build blender from
+source with slightly modified options for CMake (
+<https://wiki.blender.org/index.php/User:Ideasman42/BlenderAsPyModule>), so
+that after proper configuration you can use only python scripts to call blender
+and produce an output, and also providing the source and code completion from
+outside the blender GUI. I still have to figure out, in what ways the behaviour
+differs for both workflows (combination of GUI and interactive console vs only
+scripting).\ I now pulled all of blenders sources (
+`https://git.blender.org/blender.git` ) and built dependencies according to the
+instructions at
 <https://wiki.blender.org/index.php/Dev:Doc/Building_Blender/Linux/Ubuntu/CMake>.
 Especially installing all dependencies (automatically with the provided
-[install\_deps.sh](install_deps.sh) script) took a long time and some
-things that are already installed may have been built from source code
-again. I am wondering if a `make install` will then also override the
-already installed things (like numpy) and if that will cause a broken
-installation or redundancies.\
-The next step is to build Blender using CMake. I’m not quite sure, where
-the provided CMake options are to be inserted. Also, I don’t know where
-all the `bpy` sources are going to be added to (probably the usual local
-or system-wide installation directories). Also, for Jedi-Vim I’m not
-sure if it will find blenders sources for code-completion and syntax
-checking.\
-\
-OK, I now know what CMake is, great (It’s a generator for buildsystems,
-it can generate GNU-Makefiles to be executed with `make`, btw. there are
-other buildsystems apart from GNU `make` and on other platforms, not
-just Linux). You can specify options like this:\
-`cmake -DWITH_PYTHON_INSTALL=OFF -DWITH_PLAYER=OFF -DWITH_PYTHON_MODULE=ON ../blender`
-This will setup the appropriate GNU Makefile and `make` should work as
-expected.
+[install\_deps.sh](install_deps.sh) script) took a long time and some things
+that are already installed may have been built from source code again. I am
+wondering if a `make install` will then also override the already installed
+things (like numpy) and if that will cause a broken installation or
+redundancies.\ The next step is to build Blender using CMake. I’m not quite
+sure, where the provided CMake options are to be inserted. Also, I don’t know
+where all the `bpy` sources are going to be added to (probably the usual local
+or system-wide installation directories). Also, for Jedi-Vim I’m not sure if it
+will find blenders sources for code-completion and syntax checking.\ \ OK, I
+now know what CMake is, great (It’s a generator for buildsystems, it can
+generate GNU-Makefiles to be executed with `make`, btw. there are other
+buildsystems apart from GNU `make` and on other platforms, not just Linux). You
+can specify options like this:\ `cmake -DWITH_PYTHON_INSTALL=OFF
+-DWITH_PLAYER=OFF -DWITH_PYTHON_MODULE=ON ../blender` This will setup the
+appropriate GNU Makefile and `make` should work as expected.
 
- \
-
-------------------------------------------------------------------------
 
 Mon Apr 16 14:59:56 CEST 2018
 
-Setting up a virtual lab environment for system administration tests {#setting-up-a-virtual-lab-environment-for-system-administration-tests .unnumbered}
+Setting up a virtual lab environment for system administration tests
 ====================================================================
 
 It is important to have a lab environment/network to *play around* with
-installations and configurations. Testing in a lab system removes a
-large part of the risk when it comes to making changes in an already
-working system. Since the samba server would be linux server with
-multiple windows and unix clients, the lab network needs to consist of
-at least one host acting as the samba server (here: non-virtual ubuntu)
-and two clients (here: two windows virtual machines). This virtual lab
-needs to be properly configured first (making virtual snapshots from
-which you can quickly spin up clients with custom configurations, here
-VirtualBox is used).\
-TODO:
+installations and configurations. Testing in a lab system removes a large part
+of the risk when it comes to making changes in an already working system. Since
+the samba server would be linux server with multiple windows and unix clients,
+the lab network needs to consist of at least one host acting as the samba
+server (here: non-virtual ubuntu) and two clients (here: two windows virtual
+machines). This virtual lab needs to be properly configured first (making
+virtual snapshots from which you can quickly spin up clients with custom
+configurations, here VirtualBox is used).\ TODO:
 
--   Remove current double-boot and install one private Ubuntu (500 GB)
-    and one *Testing* Ubuntu (300 GB) (I doubt that I have enough memory
-    and power to run 4 virtual machines alongside each other) alongside
-    with their respective swap partitions (each 15 GB) and a seperate
-    empty FAT32 partition, for file sharing, storing virtual
-    machines, etc. (the rest, ca. 1 GB). The *Testing* Ubuntu
-    (AFT Ubuntu) is used to be able to have a fresh system for testing
-    out installations and is exclusively used to make experiments.
+-   Remove current double-boot and install one private Ubuntu (500 GB) and one
+    *Testing* Ubuntu (300 GB) (I doubt that I have enough memory and power to
+run 4 virtual machines alongside each other) alongside with their respective
+swap partitions (each 15 GB) and a seperate empty FAT32 partition, for file
+sharing, storing virtual machines, etc. (the rest, ca. 1 GB). The *Testing*
+Ubuntu (AFT Ubuntu) is used to be able to have a fresh system for testing out
+installations and is exclusively used to make experiments.
 
--   Get Windows 7 and Ubuntu virtual machines with basic installations
-    (cygwin, ssh, git, rsync) up and running in VirtualBox
-    (with guest-additions). Then clone them and assign different
-    hostnames and ip adresses to distinguish them from each other. Make
-    sure that they are all connected to each other (ping ip’s).
+-   Get Windows 7 and Ubuntu virtual machines with basic installations (cygwin,
+    ssh, git, rsync) up and running in VirtualBox (with guest-additions). Then
+clone them and assign different hostnames and ip adresses to distinguish them
+from each other. Make sure that they are all connected to each other (ping
+ip’s).
 
 -   Install samba server on AFT Ubuntu and
 
-[^1]: <http://git-annex.branchable.com/walkthrough/#index12h2>
-# Things I need to read and do to achieve 2d animations of simple geometriews with Panda3d
+
+# Things I need to read and do to achieve 2d animations of simple geometriews
+with Panda3d
 
 - Learn more about the *Intervals* system, which can playback scripted actinos
 
@@ -173,23 +144,39 @@ TODO:
 
 # Panda3d internal geometry classes
 
-Each **GeomVertex** has a position, but can also have other geometric data other associated with it, like normal vector (there's almost always redundant information, since it would suffice to define one normal vector for a plane made of 3 GeomVertex's), texcoord, color, ... , custom (whatever set of data you want to give to the shader)). For each vertex, this set of information is stored in a **GeomVertexData** object. You can modify these *column names* (see the **GeomVertexFormat** class for a list of reserved column names). 
+Each **GeomVertex** has a position, but can also have other geometric data
+other associated with it, like normal vector (there's almost always redundant
+information, since it would suffice to define one normal vector for a plane
+made of 3 GeomVertex's), texcoord, color, ... , custom (whatever set of data
+you want to give to the shader)). For each vertex, this set of information is
+stored in a **GeomVertexData** object. You can modify these *column names* (see
+the **GeomVertexFormat** class for a list of reserved column names). 
 
 Each **GeomVertexData** is usually a single 2d Array, stored as a contiguous
 block in memory. It is also possible to distribute the data of vertices and
 have different sets of columns packaged into different locations in memory.
-Each of these blocks are then called **GeomVertexArray**. This is useful if you need to render multiple objects with e.g. the same geometry, but want to modify the lighting (normal) or color).
+Each of these blocks are then called **GeomVertexArray**. This is useful if you
+need to render multiple objects with e.g. the same geometry, but want to modify
+the lighting (normal) or color).
 
-The **GeomVertexFormat** object describes how the columns of a GeomVertexData are ordered and named, and exactly what kind of numeric data is stored in each column, e.g. it gives the relatively raw data in the **GeomVertexData** objects meaning. (In practice, you first need to define a **GeomVertexFormat** to populate a **GeomVertexData** object)
+The **GeomVertexFormat** object describes how the columns of a GeomVertexData
+are ordered and named, and exactly what kind of numeric data is stored in each
+column, e.g. it gives the relatively raw data in the **GeomVertexData** objects
+meaning. (In practice, you first need to define a **GeomVertexFormat** to
+populate a **GeomVertexData** object)
 
-**GeomVertexArrayData** contains a contiguous 2d array of data. To know how to interpret that data, a **GeomVertexArrayFormat** is needed, which contains several **GeomVertexColumn** (beware: not GeomVertexColumnFormat) objects for even more fine-grained specification of what data is in what column. 
-Each **GeomVertexColumn** has a name, numeric type and contents, that are
-assigned and can be queried. 
+**GeomVertexArrayData** contains a contiguous 2d array of data. To know how to
+interpret that data, a **GeomVertexArrayFormat** is needed, which contains
+several **GeomVertexColumn** (beware: not GeomVertexColumnFormat) objects for
+even more fine-grained specification of what data is in what column.  Each
+**GeomVertexColumn** has a name, numeric type and contents, that are assigned
+and can be queried. 
 
 In Panda3d, to connect together vertices from a **GeomVertexArray(Data)**,
 first this list of vertices is indexed and then the the indices are used to
 access the vertex data. To define a primitive **GeomPrimitive** you use the
-classes GeomTriangles, GeomTristrips, GeomTrifans, GeomLines, GeomLinestrips, GeomPoints, ...).
+classes GeomTriangles, GeomTristrips, GeomTrifans, GeomLines, GeomLinestrips,
+GeomPoints, ...).
 
 A **GeomVertexData** and several **GeomPrimitive** objects are collected to
 gether to make up a **Geom** object, a single piece of renderable geomtry.
@@ -198,173 +185,162 @@ gether to make up a **Geom** object, a single piece of renderable geomtry.
 One **GeomVertexData** may be shared among many different **Geoms** (each of
 which might use a different subset of its vertices). 
 
-A **Geom** can only have one primitive type (Tri\*, Line\*, or Points) You can call geom.getPrimitiveType() to determine the (fundamental) primitive type stored within a particular Geom. 
+A **Geom** can only have one primitive type (Tri\*, Line\*, or Points) You can
+call geom.getPrimitiveType() to determine the (fundamental) primitive type
+stored within a particular Geom. 
 
 Conveniently named, a **GeomNode** is what pulls the **Geom** (geometry data
-unattached to any scene and without rendering state) into the scene graph. Each **GeomNode** contains a list of tuples (**Geom**, **RenderState**). The **RenderState** also includes the texture image itself. These render state definitions are therefore not a seperate node, but included in the **GeomNode**, and they override any state inherited from the scene graph, unless the scene graph state definitons have a priority > 0.
+unattached to any scene and without rendering state) into the scene graph. Each
+**GeomNode** contains a list of tuples (**Geom**, **RenderState**). The
+**RenderState** also includes the texture image itself. These render state
+definitions are therefore not a seperate node, but included in the
+**GeomNode**, and they override any state inherited from the scene graph,
+unless the scene graph state definitons have a priority > 0.
 
 A **BoundingVolume** is a piece of geometry of a node and it's children
 enclosing all points down the line and is used for collision detection and
 culling, it is automatically generated by Panda3D. Useful functions are
-getBounds() and showBounds(). The **BoundingVolume** can be e.g. a **BoundingSphere**. Panda doesn't always compute the minimal (tight) bounds, because that would require much calculation, it often just approximates it and calculates loose bounds. You can in fact get the tightest possible box shape with getTightBounds() and show it with showTightBounds(). With setBounds(BoundingVolume(...)) and setFinal(1), you can manually assign Bounding Volumes. 
+getBounds() and showBounds(). The **BoundingVolume** can be e.g. a
+**BoundingSphere**. Panda doesn't always compute the minimal (tight) bounds,
+because that would require much calculation, it often just approximates it and
+calculates loose bounds. You can in fact get the tightest possible box shape
+with getTightBounds() and show it with showTightBounds(). With
+setBounds(BoundingVolume(...)) and setFinal(1), you can manually assign
+Bounding Volumes. 
 
-# Generating Geometry Procedurally
-The first thing you need to render anything is a valid **GeomVertexFormat**,
-which specifies what data you would want to give (there are pre-defined
-formats which can make this task easier) to the shader/the graphics card. You need to do e.g. sth. like
+# Generating Geometry Procedurally The first thing you need to render anything
+is a valid **GeomVertexFormat**, which specifies what data you would want to
+give (there are pre-defined formats which can make this task easier) to the
+shader/the graphics card. You need to do e.g. sth. like
 
-```
-array = GeomVertexArrayFormat()
-array.addColumn("vertex", 3, Geom.NTFloat32, Geom.CPoint)
-array.addColumn("texcoord", 2, Geom.NTFloat32, Geom.CTexcoord)
-```
+``` array = GeomVertexArrayFormat() array.addColumn("vertex", 3,
+Geom.NTFloat32, Geom.CPoint) array.addColumn("texcoord", 2, Geom.NTFloat32,
+Geom.CTexcoord) ```
 
 The name of a column should be an **InternalName** object (enables fast
 lookups).
 
 Pass this array to a **GeomVertexFormat**
 
-```
-format = GeomVertexFormat()
-format.addArray(array)
-```
+``` format = GeomVertexFormat() format.addArray(array) ```
 
-Once your format is complete, register it (this is required for some internal OpenGL/DirectX configuration stuff, it might also play a role in making a proper shader that uses all the supplied data)
+Once your format is complete, register it (this is required for some internal
+OpenGL/DirectX configuration stuff, it might also play a role in making a
+proper shader that uses all the supplied data)
 
-```
-format = GeomVertexFormat.registerFormat(format)
-```
+``` format = GeomVertexFormat.registerFormat(format) ```
 
 The old GeomVertexFormat should be discarded once you use a new
-GeomVertexFormat, so the above syntax should almost always be used. 
-This seems to be a lot of overhead just to render a thing, but the *thing*'s
-information must be interpreted properly and passed to the underlying API
-properly, so it is necessary. The more you need to specify, the more control
-you have on what actually happens. 
+GeomVertexFormat, so the above syntax should almost always be used.  This seems
+to be a lot of overhead just to render a thing, but the *thing*'s information
+must be interpreted properly and passed to the underlying API properly, so it
+is necessary. The more you need to specify, the more control you have on what
+actually happens. 
 
 The pre-defined **GeomVertexFormat** that I would use in most situations is
 
-```
-format = GeomVertexFormat.getV3n3c4()    
-```
+``` format = GeomVertexFormat.getV3n3c4()    ```
 
 You create the **GeomVertexData** by calling 
 
-```
-vdata = GeomVertexData('name', format, Geom.UHStatic)
-```
+``` vdata = GeomVertexData('name', format, Geom.UHStatic) ```
 
 where Geom.UHStatic stands for a *Usage Hint* to Panda3D, that it will be
 static data (the vertices' geometry will remain unchanged). It's just a hint
-though, if you want to change the actual vertex data (e.g. position) to create an animation, maybe you should give the hint Geom.UHDynamic instead (this can accellerate performance by avoiding unnecessary caching). 
+though, if you want to change the actual vertex data (e.g. position) to create
+an animation, maybe you should give the hint Geom.UHDynamic instead (this can
+accellerate performance by avoiding unnecessary caching). 
 
-Optionally, for a **GeomVertexData**, you can manually boost performance by explicitly setting the number of rows (number of vertices?) by calling ``vdata.setNumRows(4)``
+Optionally, for a **GeomVertexData**, you can manually boost performance by
+explicitly setting the number of rows (number of vertices?) by calling
+``vdata.setNumRows(4)``
 
 To fill in the actual data tuples into the row (referring to a specific
 vertex), appending it to the column, you first create for each column a
 **GeomVertexWriter** object, which you then add (append) data to using
 ``add_ddataXX()``, e.g. 
 
-```
-vertex = GeomVertexWriter(vdata, 'vertex')
-color = GeomVertexWriter(vdata, 'color')
-```
-and then
-```
-vertex.addData3f(1, 0, 0)
-color.addData4f(0, 0, 1, 1)
+``` vertex = GeomVertexWriter(vdata, 'vertex') color = GeomVertexWriter(vdata,
+'color') ``` and then ``` vertex.addData3f(1, 0, 0) color.addData4f(0, 0, 1, 1)
  
-vertex.addData3f(1, 1, 0)
-color.addData4f(0, 0, 1, 1)
+vertex.addData3f(1, 1, 0) color.addData4f(0, 0, 1, 1)
  
-vertex.addData3f(0, 1, 0)
-color.addData4f(0, 0, 1, 1)
+vertex.addData3f(0, 1, 0) color.addData4f(0, 0, 1, 1)
  
-vertex.addData3f(0, 0, 0)
-color.addData4f(0, 0, 1, 1)
-```
+vertex.addData3f(0, 0, 0) color.addData4f(0, 0, 1, 1) ```
 
-(Not in manual: There are functions like ``setRow(int row)`` and ``setDataXX()`` to access 
-individual rows and columns and modify data in-place.)
+(Not in manual: There are functions like ``setRow(int row)`` and
+``setDataXX()`` to access individual rows and columns and modify data
+in-place.)
 
 To render anything, you need to instantiate a **GeomPrimitive**, and give it
 the indices of the vertices to use in a particular **GeomVertexData** object. 
 
 To draw some triangles (numbers are indices of vertices), do 
 
-```
-prim = GeomTriangles(Geom.UHStatic)
+``` prim = GeomTriangles(Geom.UHStatic)
  
-prim.addVertex(0)
-prim.addVertex(1)
-prim.addVertex(2)
-# thats the first triangle
+prim.addVertex(0) prim.addVertex(1) prim.addVertex(2) # thats the first
+triangle
  
-# you can also add a few at once
-prim.addVertices(2, 1, 3)
+# you can also add a few at once prim.addVertices(2, 1, 3)
  
-prim.addVertices(0, 5, 6)
-```
+prim.addVertices(0, 5, 6) ```
 
-It is recommended, but not strictly necessary to also call ``close_primitive()``
-after adding all vertices, especially for variable number of vertices
-primitives e.g. for **GeomLinestrips**. You can also give a usage hint (almost
-always ``Geom.UH_static``, since usually, if you intend to animate the
-vertices, you would operate on the vertices, not the indices). 
+It is recommended, but not strictly necessary to also call
+``close_primitive()`` after adding all vertices, especially for variable number
+of vertices primitives e.g. for **GeomLinestrips**. You can also give a usage
+hint (almost always ``Geom.UH_static``, since usually, if you intend to animate
+the vertices, you would operate on the vertices, not the indices). 
 
 There are several utility functions to add vertices by their index: 
 
-```
-add_vertices(v1, v2)
-add_vertices(v1, v2, v3)
-add_vertices(v1, v2, v3, v4)
+``` add_vertices(v1, v2) add_vertices(v1, v2, v3) add_vertices(v1, v2, v3, v4)
 
 add_consecutive_vertices(start, numVertices)
 
-add_next_vertices(numVertices)
-```
-None of these call ``close_primitive()``, which is recommended you call
-explicitly after having added all your vertices. 
+add_next_vertices(numVertices) ``` None of these call ``close_primitive()``,
+which is recommended you call explicitly after having added all your vertices. 
 
 To put your geometry into the scene graph, you need a **Geom** object and a
 **GeomNode**.
 
-```
-geom = Geom(vdata)
-geom.addPrimitive(prim)
+``` geom = Geom(vdata) geom.addPrimitive(prim)
  
-node = GeomNode('gnode')
-node.addGeom(geom)
+node = GeomNode('gnode') node.addGeom(geom)
  
-nodePath = render.attachNewNode(node)
-```
+nodePath = render.attachNewNode(node) ```
 
 There is only one **GeomVertexData** associated with any particular **Geom**
 (set it later using geom.setVertexData()).
 
-Again: A **GeomNode** may include multiple **Geoms**, and each **Geom** may include
-multiple **GeomPrimitives**. (However, all of the primitives added to a **Geom** must
-have the same fundamental primitive type: triangles, lines, or points.)
+Again: A **GeomNode** may include multiple **Geoms**, and each **Geom** may
+include multiple **GeomPrimitives**. (However, all of the primitives added to a
+**Geom** must have the same fundamental primitive type: triangles, lines, or
+points.)
 
--------- Editing Stuff in Blender and loading into Panda3d
-    In Blender, you can install the panda3d .egg importer by downloading the repo
-    at https://github.com/rdb/blender-egg-importer as .zip and going to File ->
-    User Preferences -> Addons -> Install from .zip file, and activating it
-    afterwards.
+Editing Stuff in Blender and loading into Panda3d In Blender, you can install
+the panda3d .egg importer by downloading the repo at
+https://github.com/rdb/blender-egg-importer as .zip and going to File -> User
+Preferences -> Addons -> Install from .zip file, and activating it afterwards.
 
     The best and most famous exporter is according to panda3d.org the YABEEE
-export addon, that you can download from it's github page as a .zip and then install
-the addon from the file. 
+export addon, that you can download from it's github page as a .zip and then
+install the addon from the file. 
 
     In Blender, to put the 3d cursor at blenders origin, use ``Ctrl + C``
 
     In Blender, to put the model's origin (yellow dot) to the position of the
-    cursor, use ``Ctrl + Alt + Shift + C`` and select the appropriate option.
+cursor, use ``Ctrl + Alt + Shift + C`` and select the appropriate option.
 
-    In Blender, the **Pivot Point** is the Point, where the mini-3d Axes are shown. Depending on where the pivot point is, different operations  (e.g. scaling, rotating) affect the object differently.
-------- 
+    In Blender, the **Pivot Point** is the Point, where the mini-3d Axes are
+shown. Depending on where the pivot point is, different operations  (e.g.
+scaling, rotating) affect the object differently.
 
-To be able to manually position the camera using (``ShowBase.camera.setPos()``), you need to explicitly call ``self.disableMouse()`` at the beginning.
+
+To be able to manually position the camera using
+(``ShowBase.camera.setPos()``), you need to explicitly call
+``self.disableMouse()`` at the beginning.
 
 Apparently, ``prim.close_primitive()`` and ``prim.closePrimitive()`` are the
 same thing. In 1.9.4, there apparently is only ``prim.closePrimitive()``. So,
@@ -372,135 +348,112 @@ if in doubt, call ``prim.closePrimitive()`` or nothing at all, since I don't
 think it's necessary. 
 
 
------- Tinkering around with Inkscape 
-    To make the complicated ends of latex curly brackets a path, you have to 
-    ungroup (Ctrl + Shift + G) and unlink clones (Alt + Shift + D) repeatedly, 
-    then you can select the nodes of the path. 
-------
+Tinkering around with Inkscape To make the complicated ends of latex curly
+brackets a path, you have to ungroup (Ctrl + Shift + G) and unlink clones (Alt
++ Shift + D) repeatedly, then you can select the nodes of the path. 
 
------- If pip2.x aka pip or pip3 is not installed: 
-```
-    sudo apt-get install python-pip
-    sudo apt-get install python3-pip
-```
-------
+If pip2.x aka pip or pip3 is not installed: ``` sudo apt-get install python-pip
+sudo apt-get install python3-pip ```
 
------- Tinkering around with SVG Libraries:
-    I want to render pdf (or even better svg) in panda3d
-    This piece of code 
-    https://discourse.panda3d.org/t/vector-graphics-on-textures-with-gizeh-cairo/15476
-    caught my attention. 
+Tinkering around with SVG Libraries: I want to render pdf (or even better svg)
+in panda3d This piece of code
+https://discourse.panda3d.org/t/vector-graphics-on-textures-with-gizeh-cairo/15476
+caught my attention. 
 
-    To try this out, you need **Gizeh**, a python package that depends on **Cairo**
+To try this out, you need **Gizeh**, a python package that depends on **Cairo**
 
-    Before installing these, upgrade your setuptools: 
-    ```
-    sudo pip install --upgrade setuptools
-    ```
-    Then install **Cairo** and **Gizeh**
-    ```
-    sudo apt-get install libcairo2-dev
-    sudo pip install gizeh
-    ```
+Before installing these, upgrade your setuptools: ``` sudo pip install
+--upgrade setuptools ``` Then install **Cairo** and **Gizeh** ``` sudo apt-get
+install libcairo2-dev sudo pip install gizeh ```
 
------
-
-What do I actually need now?
+Some thoughts on my python animation library: 
 
 - From now, on creating 2d elements and animating them should pose much less of
   a problem, since I have direct access to the vertex data. 
 
 - For videos (mp4) that explain math, I need only bitmap files (since the video
-  itself is also limited in resolution). **I need a way to convert pdfs (or dvis) to
-  bitmaps with transparent background.** (
-  - Sympy: writes the equations to actual files with white background and black font. I'm not sure if it is also able to write to a **BytesIO**-like object, which would make it possible to
-    store the files in a buffer not need to make the program write it back to the file
-system (harddrive is slow). 
+  itself is also limited in resolution). **I need a way to convert pdfs (or
+dvis) to bitmaps with transparent background.** 
+  - Sympy: writes the equations to actual files with white background and black
+    font. I'm not sure if it is also able to write to a **BytesIO**-like
+object, which would make it possible to store the files in a buffer not need to
+make the program write it back to the file system (harddrive is slow). 
   - Cairo: can read in pdfs and convert them to bitmaps and even svgs (and can
     probably also calculate intermediate hermitian spline points in bezier
-    curves)
+curves)
   - LaTeX itself can be called from within python using a subprocess. Also,
     LaTeX integrates now a function directly, which automatically makes a call
-    to convert the pdf to a png file. You then write to disk (latex file), read
-    from disk (latex file), write to disk (pdf and png) and read from disk again
-    (read png as texture), which may be quite expensive, but the easiest solution
-    so far) 
+to convert the pdf to a png file. You then write to disk (latex file), read
+from disk (latex file), write to disk (pdf and png) and read from disk again
+(read png as texture), which may be quite expensive, but the easiest solution
+so far
 
 
 What are putoff-tasks that would be cool but probably come with too many
 difficulties ?
 
-- putoff-task: In Panda3d itself, I don't necessarily need to store latex elements as vector
-  data (that is sampled bezier curves with only straight lines connecting
-nodes), I could just render all latex elements as sprites with white/colors on
-transparent/halfway transparent background. Morphing sprites into other sprites
-should also work (by animating the quad's corners and using double
-  textures where one fades in and the other fades out)
+- putoff-task: In Panda3d itself, I don't necessarily need to store latex
+  elements as vector data (that is sampled bezier curves with only straight
+lines connecting nodes), I could just render all latex elements as sprites with
+white/colors on transparent/halfway transparent background. Morphing sprites
+into other sprites should also work (by animating the quad's corners and using
+double textures where one fades in and the other fades out)
 
 - putoff-task: use actual vector graphics tools to render everything, like
   cairo. That would make it possible to create state machines in which you can
-  navigate visually though problems, changeing interactively back and forth
-  (interacting with the graphics themselves). I don't know how expensive it is to
-  render animated svg graphics. 
+navigate visually though problems, changeing interactively back and forth
+(interacting with the graphics themselves). I don't know how expensive it is to
+render animated svg graphics. 
 
 
-Do 10. Mai 21:33:05 CEST 2018 
-** The Next Step would be to look into Sympy rendering latex to a
-semi-transparent bitmap buffer and displaying that in panda3d ** - Ok, done
-that. As it turns out, it's probably easier to handle it differently. But with
-some refining it may still be an option. It doesn't give you the full power of
-latex though. You may not be able to play tikz images. 
+Do 10. Mai 21:33:05 CEST 2018 ** The Next Step would be to look into Sympy
+rendering latex to a semi-transparent bitmap buffer and displaying that in
+panda3d ** - Ok, done that. As it turns out, it's probably easier to handle it
+differently. But with some refining it may still be an option. It doesn't give
+you the full power of latex though. You may not be able to play tikz images. 
 
------ Vim: formatting/breaking long lines 
-    gq{motion} % format the line that {motion} moves over
-    {Visual}gq % format the visually selected area
-    gqq        % format the current line
+Vim: formatting/breaking long lines gq{motion} % format the line that {motion}
+moves over {Visual}gq % format the visually selected area gqq format the
+current line
     
-    re-connect broken lines with Shift + J    
------
+    re-connect broken lines with Shift + J 
 
 
 Fr 18. Mai 10:16:40 CEST 2018
 
 - scale latex textured quad to appropriate dimensions - DONE
-- find a way to compile and load a latex texture procedurally, then display it - DONE
+- find a way to compile and load a latex texture procedurally, then display it
+  - DONE
 
------ Matrix Representation within Panda3d differs from normal opengl/glm
-    for all about panda3d's versions: 
-    https://www.panda3d.org/manual/index.php/Matrix_Representation
-    It appears as if p3d's Mat4 (LMatrix4f) are the transposed versions of the normal opengl/glm convention. So, you need to always transform your matrices into the right format when using i.e. pyglm. 
-    The properly formatted p3d matrices for simple translation/rotation operations
-    one can retrieve directly with a call to e.g. 
-    ```
-    static LMatrix4f translateMat   (   const LVecBase3f    trans   )   static
-    ```
-    (see https://www.panda3d.org/reference/1.9.4/python/panda3d.core.LMatrix4f#af0d0c9acb09597d82fa981aa804faa7a)
------
+Matrix Representation within Panda3d differs from normal opengl/glm for all
+about panda3d's versions:
+https://www.panda3d.org/manual/index.php/Matrix_Representation It appears as if
+p3d's Mat4 (LMatrix4f) are the transposed versions of the normal opengl/glm
+convention. So, you need to always transform your matrices into the right
+format when using i.e. pyglm.  The properly formatted p3d matrices for simple
+translation/rotation operations one can retrieve directly with a call to e.g.
+``` static LMatrix4f translateMat   (   const LVecBase3f    trans   )   static
+``` (see
+https://www.panda3d.org/reference/1.9.4/python/panda3d.core.LMatrix4f#af0d0c9acb09597d82fa981aa804faa7a)
 
------ Vim command to make the splits the same size
-    Ctrl + W = 
------
 
------ To display info about a package in pip, do (e.g. for panda3d)
-    pip show panda3d
------
+Vim command to make the splits the same size Ctrl + W =
 
------ Installing panda3d on ubuntu with python already installed is easy:
-    just follow the instructions at
-    https://github.com/panda3d/panda3d
------
+To display info about a package in pip, do (e.g. for panda3d) pip show panda3d
+
+Installing panda3d on ubuntu with python already installed is easy: just follow
+the instructions at https://github.com/panda3d/panda3d
+
 
 So 20. Mai 20:54:19 CEST 2018
 
 - get animation (moving quads) to work - DONE
 
------ Attention when manually setting triangle geometry points directly in OpenGL or
+Attention when manually setting triangle geometry points directly in OpenGL or
 indirectly through Panda3d with addData3f and addVertices. Sometimes, it may
 occurr that the indices must be shuffled around before a (single) triangle
 appears on screen. May have to do with direction (clockwise or counterclockwise
 (or has it?))
------
-
 
 
 Di 5. Jun 14:06:39 CEST 2018
@@ -516,25 +469,17 @@ Do 7. Jun 14:41:18 CEST 2018
 
 The Current working directory can be retrieved in python using
 
-from pathlib import Path, PurePath
-print(Path.cwd())
+from pathlib import Path, PurePath print(Path.cwd())
 
-Get full file path of a file
-readlink test.txt -f
-or in vim: 
-:!readlink -f %
-this next thing also works, this was added to coreutils later on: 
-realpath test.txt
-
-
-
-Di 3. Jul 11:54:30 CEST 2018
+Get full file path of a file readlink test.txt -f or in vim: :!readlink -f %
+this next thing also works, this was added to coreutils later on: realpath
+test.txt   Di 3. Jul 11:54:30 CEST 2018
 
 Meeting: 
 - We don't necessarily need real-space simulations
 - Oxygen diffusion may not be that much of a problem when going with the
   assumption that the process is reaction-limited and therefore using "only"
-  topological KMC
+topological KMC
 
 
 Sun Jul  8 14:38:14 CEST 2018
@@ -550,24 +495,23 @@ Sun Aug  5 23:47:43 CEST 2018
 
 - In Rischke I (Klassische Mechanik), there are a lot of good explicit
   calculations, especially regarding the equivalence of the 3 approaches to
-  defining a conservative force field.
+defining a conservative force field.
 
 - In Freudenthal's *Mathematics as an Educational Task*, p. 555-556, the
   confusion with the sometimes left-out explicit dependencies by physicists is
-  explained.
+explained.
 
 
 Mon Aug 20 13:19:40 CEST 2018
 
 - python: using a star import is considered a bad design. Only use things that
-  are really needed, if you find yourself doing a lot of repetitive importing 
-  work, then consider restructuring your program
-
+  are really needed, if you find yourself doing a lot of repetitive importing
+work, then consider restructuring your program
 
 
 Do 13. Sep 13:07:56 CEST 2018
 
-- show/copy/edit the current path in nautilus: [Ctrl]+[l]
+- show/copy/edit the current path in nautilus: C-l
 
 - tip: inkscape can do basic image annotating/highlighting/cropping very well
 
@@ -576,30 +520,27 @@ Mi 3. Okt 21:32:31 CEST 2018
 
 - copy into / paste from system clipboard in linux: "+y and "+p
 
-- completion: [Ctrl]+[p] and [Ctrl]+[n] for 'previous' and 'next'
-
+- completion: C-p and C-n for 'previous' and 'next'
 
 
 Sat Oct  6 11:14:28 CEST 2018
 
 Notes to learning Clojure within Emacs: 
 
-Compile Clojure Program: 
-C-c C-k
+Compile Clojure Program: C-c C-k
 
 Cider is a terminal for executing Clojure programs interactively. You can
-activate cider using 
-M-x cider-jack-in
+activate cider using M-x cider-jack-in
 
-A selected region in Emacs can be deleted with 
-C-w
+A selected region in Emacs can be deleted with C-w
 
-To run the last command again in cider, use 
-M-p
-or 
-C-x arrow-up
+To run the last command again in cider, use M-p or C-x arrow-up
 
-To run the current line you're editing, use
-C-x C-e
-(be sure your cursor is at the end of the line)
+To run the current line you're editing, use C-x C-e (be sure your cursor is at
+the end of the line)
 
+
+Sun Oct  7 10:23:05 CEST 2018
+
+- latex: \eqref{eq:some} refers to some equation and prints out the number with
+  parentheses, like (2)
