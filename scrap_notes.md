@@ -1,30 +1,21 @@
----
-title: scrap notes
-...
-
- \
-
-------------------------------------------------------------------------
-
 Sat Apr 13 29:30:12 CEST 2018
 
-Managing large binary files alongside git {#managing-large-binary-files-alongside-git .unnumbered}
-=========================================
+## Managing large binary files alongside git
 
-<span>1</span> Only using standard `git` isn’t elegant for managing and
+Only using standard `git` isn’t elegant for managing and
 versioning binary files in addition to text-based files. For binary
 files, `diff`s most often don’t make sense and there’s no general
 behaviour or rules for how they would be merged. If there’s no
 reasonable way to merge, the files have to be stored whole. Since binary
 files are usually way larger than pure source code files, saving them as
 whole blobs for each commit enourmously increases the size of the core
-git repository.\
+git repository.
 The solution must involve the storage of a set of binary files (whole
 chunks, no diffs) for each commit that produced new ones, outside the
-core git repository, but still associatable with each commit.\
+core git repository, but still associatable with each commit.
 What I specifically want at this point is to export a pdf (e.g. current
 version from latex file), and misc. exported figures (pdf or png) for
-different versions of a program.\
+different versions of a program.
 This would be great for collaboration, since if the binary files aren’t
 integral to the git repository itself, a supervisor doesn’t have to deal
 with an unprofessionally cluttered up and ever growing git repo
@@ -43,19 +34,19 @@ to a commit. Those binaries are then stored in a special subfolder
 somewhere in `.git/`, and symlinks are automatically put at the right
 positions in the working tree. Core `git` only tracks and checks out the
 symlinks (those are usually text files with a hash of the associated
-binary file).\
+binary file).
 I set it up with one client (non-bare repo) and one server (bare repo),
 where the client pushes changes to the server and syncs the binary files
 (`rsync` by default, and over ssh, in this case is `rsync` not a special
-remote) with a call to `git annex sync –content`.\
+remote) with a call to `git annex sync –content`.
 Details can be found in the walkthrough on the official `git-annex`
-webpage <http://git-annex.branchable.com/walkthrough/>.\
+webpage.
 
-<span>2</span> There are differences between a plain ol’ `remote` and a
+There are differences between a plain ol’ `remote` and a
 `git-annex` special remote. Special remotes are places, where the
 contents of the binary files are stored (optionally encrypted), while
 git annex can still operate on them much as it would on any other
-remote.\
+remote. 
 Such special remotes support also nice integration with a whole variety
 with widely used web services such as Dropbox, Amazon S3, or your own
 ssh rsync server like. Using a special remote is sensible to do if your
@@ -64,14 +55,12 @@ core git repo is stored on GitHub, which doesn’t yet support
 repository, you can enable use of the same special remote in other
 clones of the repository.”[^1])
 
- \
+ 
 
-------------------------------------------------------------------------
 
-Sat Apr 14 20:01:02 CEST 2018:\
+Sat Apr 14 20:01:02 CEST 2018:
 
-Blender As A Python Module {#blender-as-a-python-module .unnumbered}
-==========================
+## Blender As A Python Module
 
 As I want to be able to use Blender’s rendering and logic capabilities
 to make scientific illustrations in a programmatic way, I read a few
@@ -98,7 +87,7 @@ modified options for CMake (
 call blender and produce an output, and also providing the source and
 code completion from outside the blender GUI. I still have to figure
 out, in what ways the behaviour differs for both workflows (combination
-of GUI and interactive console vs only scripting).\
+of GUI and interactive console vs only scripting).
 I now pulled all of blenders sources (
 `https://git.blender.org/blender.git` ) and built dependencies according
 to the instructions at
@@ -108,30 +97,27 @@ Especially installing all dependencies (automatically with the provided
 things that are already installed may have been built from source code
 again. I am wondering if a `make install` will then also override the
 already installed things (like numpy) and if that will cause a broken
-installation or redundancies.\
+installation or redundancies.
 The next step is to build Blender using CMake. I’m not quite sure, where
 the provided CMake options are to be inserted. Also, I don’t know where
 all the `bpy` sources are going to be added to (probably the usual local
 or system-wide installation directories). Also, for Jedi-Vim I’m not
 sure if it will find blenders sources for code-completion and syntax
-checking.\
-\
+checking.
+
 OK, I now know what CMake is, great (It’s a generator for buildsystems,
 it can generate GNU-Makefiles to be executed with `make`, btw. there are
 other buildsystems apart from GNU `make` and on other platforms, not
-just Linux). You can specify options like this:\
+just Linux). You can specify options like this:
 `cmake -DWITH_PYTHON_INSTALL=OFF -DWITH_PLAYER=OFF -DWITH_PYTHON_MODULE=ON ../blender`
 This will setup the appropriate GNU Makefile and `make` should work as
 expected.
 
- \
-
-------------------------------------------------------------------------
+ 
 
 Mon Apr 16 14:59:56 CEST 2018
 
-Setting up a virtual lab environment for system administration tests {#setting-up-a-virtual-lab-environment-for-system-administration-tests .unnumbered}
-====================================================================
+Setting up a virtual lab environment for system administration tests
 
 It is important to have a lab environment/network to *play around* with
 installations and configurations. Testing in a lab system removes a
@@ -142,7 +128,7 @@ at least one host acting as the samba server (here: non-virtual ubuntu)
 and two clients (here: two windows virtual machines). This virtual lab
 needs to be properly configured first (making virtual snapshots from
 which you can quickly spin up clients with custom configurations, here
-VirtualBox is used).\
+VirtualBox is used).
 TODO:
 
 -   Remove current double-boot and install one private Ubuntu (500 GB)
@@ -160,10 +146,8 @@ TODO:
     hostnames and ip adresses to distinguish them from each other. Make
     sure that they are all connected to each other (ping ip’s).
 
--   Install samba server on AFT Ubuntu and
 
-[^1]: <http://git-annex.branchable.com/walkthrough/#index12h2>
-# Things I need to read and do to achieve 2d animations of simple geometriews with Panda3d
+## Things I need to read and do to achieve 2d animations of simple geometriews with Panda3d
 
 - Learn more about the *Intervals* system, which can playback scripted actinos
 
@@ -171,7 +155,7 @@ TODO:
 
 - export .egg animations from blender and play them back in panda3d
 
-# Panda3d internal geometry classes
+## Panda3d internal geometry classes
 
 Each **GeomVertex** has a position, but can also have other geometric data other associated with it, like normal vector (there's almost always redundant information, since it would suffice to define one normal vector for a plane made of 3 GeomVertex's), texcoord, color, ... , custom (whatever set of data you want to give to the shader)). For each vertex, this set of information is stored in a **GeomVertexData** object. You can modify these *column names* (see the **GeomVertexFormat** class for a list of reserved column names). 
 
@@ -198,7 +182,7 @@ gether to make up a **Geom** object, a single piece of renderable geomtry.
 One **GeomVertexData** may be shared among many different **Geoms** (each of
 which might use a different subset of its vertices). 
 
-A **Geom** can only have one primitive type (Tri\*, Line\*, or Points) You can call geom.getPrimitiveType() to determine the (fundamental) primitive type stored within a particular Geom. 
+A **Geom** can only have one primitive type (Tri*, Line*, or Points) You can call geom.getPrimitiveType() to determine the (fundamental) primitive type stored within a particular Geom. 
 
 Conveniently named, a **GeomNode** is what pulls the **Geom** (geometry data
 unattached to any scene and without rendering state) into the scene graph. Each **GeomNode** contains a list of tuples (**Geom**, **RenderState**). The **RenderState** also includes the texture image itself. These render state definitions are therefore not a seperate node, but included in the **GeomNode**, and they override any state inherited from the scene graph, unless the scene graph state definitons have a priority > 0.
@@ -208,7 +192,7 @@ enclosing all points down the line and is used for collision detection and
 culling, it is automatically generated by Panda3D. Useful functions are
 getBounds() and showBounds(). The **BoundingVolume** can be e.g. a **BoundingSphere**. Panda doesn't always compute the minimal (tight) bounds, because that would require much calculation, it often just approximates it and calculates loose bounds. You can in fact get the tightest possible box shape with getTightBounds() and show it with showTightBounds(). With setBounds(BoundingVolume(...)) and setFinal(1), you can manually assign Bounding Volumes. 
 
-# Generating Geometry Procedurally
+## Generating Geometry Procedurally
 The first thing you need to render anything is a valid **GeomVertexFormat**,
 which specifies what data you would want to give (there are pre-defined
 formats which can make this task easier) to the shader/the graphics card. You need to do e.g. sth. like
@@ -346,7 +330,7 @@ Again: A **GeomNode** may include multiple **Geoms**, and each **Geom** may incl
 multiple **GeomPrimitives**. (However, all of the primitives added to a **Geom** must
 have the same fundamental primitive type: triangles, lines, or points.)
 
--------- Editing Stuff in Blender and loading into Panda3d
+    Editing Stuff in Blender and loading into Panda3d
     In Blender, you can install the panda3d .egg importer by downloading the repo
     at https://github.com/rdb/blender-egg-importer as .zip and going to File ->
     User Preferences -> Addons -> Install from .zip file, and activating it
@@ -362,7 +346,6 @@ the addon from the file.
     cursor, use ``Ctrl + Alt + Shift + C`` and select the appropriate option.
 
     In Blender, the **Pivot Point** is the Point, where the mini-3d Axes are shown. Depending on where the pivot point is, different operations  (e.g. scaling, rotating) affect the object differently.
-------- 
 
 To be able to manually position the camera using (``ShowBase.camera.setPos()``), you need to explicitly call ``self.disableMouse()`` at the beginning.
 
@@ -372,20 +355,20 @@ if in doubt, call ``prim.closePrimitive()`` or nothing at all, since I don't
 think it's necessary. 
 
 
------- Tinkering around with Inkscape 
+
+Tinkering around with Inkscape 
     To make the complicated ends of latex curly brackets a path, you have to 
     ungroup (Ctrl + Shift + G) and unlink clones (Alt + Shift + D) repeatedly, 
     then you can select the nodes of the path. 
-------
 
------- If pip2.x aka pip or pip3 is not installed: 
+
+If pip2.x aka pip or pip3 is not installed: 
 ```
     sudo apt-get install python-pip
     sudo apt-get install python3-pip
 ```
-------
 
------- Tinkering around with SVG Libraries:
+Tinkering around with SVG Libraries:
     I want to render pdf (or even better svg) in panda3d
     This piece of code 
     https://discourse.panda3d.org/t/vector-graphics-on-textures-with-gizeh-cairo/15476
@@ -402,8 +385,6 @@ think it's necessary.
     sudo apt-get install libcairo2-dev
     sudo pip install gizeh
     ```
-
------
 
 What do I actually need now?
 
@@ -425,7 +406,6 @@ system (harddrive is slow).
     from disk (latex file), write to disk (pdf and png) and read from disk again
     (read png as texture), which may be quite expensive, but the easiest solution
     so far) 
-
 
 What are putoff-tasks that would be cool but probably come with too many
 difficulties ?
@@ -451,13 +431,12 @@ that. As it turns out, it's probably easier to handle it differently. But with
 some refining it may still be an option. It doesn't give you the full power of
 latex though. You may not be able to play tikz images. 
 
------ Vim: formatting/breaking long lines 
+Vim: formatting/breaking long lines 
     gq{motion} % format the line that {motion} moves over
     {Visual}gq % format the visually selected area
     gqq        % format the current line
     
     re-connect broken lines with Shift + J    
------
 
 
 Fr 18. Mai 10:16:40 CEST 2018
@@ -465,7 +444,7 @@ Fr 18. Mai 10:16:40 CEST 2018
 - scale latex textured quad to appropriate dimensions - DONE
 - find a way to compile and load a latex texture procedurally, then display it - DONE
 
------ Matrix Representation within Panda3d differs from normal opengl/glm
+Matrix Representation within Panda3d differs from normal opengl/glm
     for all about panda3d's versions: 
     https://www.panda3d.org/manual/index.php/Matrix_Representation
     It appears as if p3d's Mat4 (LMatrix4f) are the transposed versions of the normal opengl/glm convention. So, you need to always transform your matrices into the right format when using i.e. pyglm. 
@@ -475,33 +454,27 @@ Fr 18. Mai 10:16:40 CEST 2018
     static LMatrix4f translateMat   (   const LVecBase3f    trans   )   static
     ```
     (see https://www.panda3d.org/reference/1.9.4/python/panda3d.core.LMatrix4f#af0d0c9acb09597d82fa981aa804faa7a)
------
 
------ Vim command to make the splits the same size
+Vim command to make the splits the same size
     Ctrl + W = 
------
 
------ To display info about a package in pip, do (e.g. for panda3d)
+To display info about a package in pip, do (e.g. for panda3d)
     pip show panda3d
------
 
------ Installing panda3d on ubuntu with python already installed is easy:
+Installing panda3d on ubuntu with python already installed is easy:
     just follow the instructions at
     https://github.com/panda3d/panda3d
------
+
 
 So 20. Mai 20:54:19 CEST 2018
 
 - get animation (moving quads) to work - DONE
 
------ Attention when manually setting triangle geometry points directly in OpenGL or
+Attention when manually setting triangle geometry points directly in OpenGL or
 indirectly through Panda3d with addData3f and addVertices. Sometimes, it may
 occurr that the indices must be shuffled around before a (single) triangle
 appears on screen. May have to do with direction (clockwise or counterclockwise
 (or has it?))
------
-
-
 
 Di 5. Jun 14:06:39 CEST 2018
 
@@ -636,4 +609,39 @@ when you were trying to asyncronously export to latex + pdf, then, as far as I g
 ```
 (setq org-export-async-init-file "~/.emacs")
 ```
-and all was well, since synchronously I could always export it without any problems using that .emacs init file. This way it also loads a bunch of stuff that the async emacs instance actually doesn't need, so it may be slow but for my purposes it's enough right now.
+and all was well, since synchronously I could always export it without any problems using that .emacs init file. This way it also loads a bunch of stuff that the async emacs instance actually doesn't need for latex exporting, so it may be slow but for my purposes it's enough right now.
+
+
+Do 22. Nov 22:27:24 CET 2018
+
+With the Unity Compiz Window Management Extra Tool 'Put', you can set keyboard shortcuts to move a window from one montior to another (within the workspace).
+
+I've set it now to 
+```
+<SHIFT><ALT><RIGHT>
+<SHIFT><ALT><LEFT>
+```
+as opposed to 
+```
+<SHIFT><ALT><CONTROL><RIGHT>
+<SHIFT><ALT><CONTROL><LEFT>
+```
+which moves the window between workspaces.
+
+Together with snapping 
+```
+<SUPER><CONTROL><LEFT>
+<SUPER><CONTROL><RIGHT>
+<SUPER><CONTROL><UP>
+<SUPER><CONTROL><DOWN>
+```
+and navigating (more explicit switching)
+```
+<SUPER>w  # current workspace
+<SUPER>w  # all workspaces
+```
+(btw., you can also search for windows' names in this layed-out swicher-modeby
+just starting to type), 
+it's a similar workflow to tiling managers, but still has the advantage of not
+being a tiling manager and keeping further utilities for e.g. sound.
+It's almost orgasmic.
