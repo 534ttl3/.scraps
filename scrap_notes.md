@@ -641,7 +641,28 @@ and navigating (more explicit switching)
 <SUPER>w  # all workspaces
 ```
 (btw., you can also search for windows' names in this layed-out swicher-modeby
-just starting to type), 
+just starting to type)
+and cycling through windows
+```
+<Shift><Alt>Tab  # current workspace
+<Shift><Control><Alt>Tab  # all workspaces
+```
 it's a similar workflow to tiling managers, but still has the advantage of not
 being a tiling manager and keeping further utilities for e.g. sound.
 It's almost orgasmic.
+
+
+Fri Nov 23 11:50:00 CET 2018
+
+`apt` was locked, so I searched what was locking it:
+```
+ps -aux | grep lock
+```
+After a quick search, I found I had to shut down the daily updating service,
+which was blocking apt (there was no update window):
+```
+sudo systemctl stop apt-daily.service
+```
+It worked after that.
+
+
