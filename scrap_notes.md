@@ -666,3 +666,11 @@ sudo systemctl stop apt-daily.service
 It worked after that.
 
 
+Fri Nov 23 14:29:10 CET 2018
+
+I configured pdf-history. Now, I can use `B` and `F` to
+navigate backward and forward in a pdf file's history.
+
+Previously, these keybindings were overridden by evil-mode.
+You can look up `evil-guide` on github, which tells you how you can redefine
+evil keys with precedence settings.
