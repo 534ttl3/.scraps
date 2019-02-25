@@ -674,3 +674,13 @@ navigate backward and forward in a pdf file's history.
 Previously, these keybindings were overridden by evil-mode.
 You can look up `evil-guide` on github, which tells you how you can redefine
 evil keys with precedence settings.
+
+
+Fr 22. Feb 15:43:45 CET 2019
+
+To run multiple instances of Code::Blocks, open up as many terminals as you
+like and type 
+```
+codeblocks --multiple-instance --no-ipc
+```
+into each terminal.
